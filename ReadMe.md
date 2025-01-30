@@ -93,7 +93,7 @@ Now in the root Folder create these files :
 
 the whole package.json file will be :
 
-{
+
   "name": "backendfolderstructure",
   "version": "1.0.0",
   "main": "src/server.js",
@@ -116,7 +116,6 @@ the whole package.json file will be :
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   }
-}
 
 
 In Root directory create these :
