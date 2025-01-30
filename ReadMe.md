@@ -157,28 +157,28 @@ Organize your project in the following structure:
 
 ```json
 {
-  "name": "backendfolderstructure",
-  "version": "1.0.0",
-  "main": "src/server.js",
-  "scripts": {
-    "test": "node ./test.js",
-    "dev": "nodemon ./src/server.ts",
-    "start": "node ./dist/server.js",
-    "prepare": "husky",
-    "dist": "npx tsc"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "description": "",
-  "devDependencies": {
-    "husky": "^9.1.7",
-    "lint-staged": "^15.4.3",
-    "nodemon": "^3.1.9",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
-  }
+    "name": "backendfolderstructure",
+    "version": "1.0.0",
+    "main": "src/server.js",
+    "scripts": {
+        "test": "node ./test.js",
+        "dev": "nodemon ./src/server.ts",
+        "start": "node ./dist/server.js",
+        "prepare": "husky",
+        "dist": "npx tsc"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs",
+    "description": "",
+    "devDependencies": {
+        "husky": "^9.1.7",
+        "lint-staged": "^15.4.3",
+        "nodemon": "^3.1.9",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.7.3"
+    }
 }
 ```
 
@@ -199,29 +199,29 @@ Create **CommitLint.config.js**:
 ```js
 // commitlint.config.js
 module.exports = {
-  extends: ["@commitlint/config-conventional"],
-  rules: {
-    "type-enum": [
-      2,
-      "always",
-      [
-        "feat", // New feature
-        "fix", // Bug fix
-        "docs", // Documentation update
-        "style", // Code style (formatting, missing semi-colons, etc.)
-        "refactor", // Code refactoring (neither a fix nor a feature)
-        "perf", // Performance improvement
-        "test", // Adding or updating tests
-        "build", // Build system changes (npm, husky, webpack, etc.)
-        "ci", // CI/CD related changes
-        "chore", // Routine tasks (dependency updates, etc.)
-        "revert", // Reverting previous commits
-      ],
-    ],
-    "subject-case": [2, "always", "sentence-case"], // Ensures commit messages start with an uppercase letter
-    "header-max-length": [2, "always", 100], // Limits commit message length to 100 characters
-  },
-};
+    extends: ['@commitlint/config-conventional'],
+    rules: {
+        'type-enum': [
+            2,
+            'always',
+            [
+                'feat', // New feature
+                'fix', // Bug fix
+                'docs', // Documentation update
+                'style', // Code style (formatting, missing semi-colons, etc.)
+                'refactor', // Code refactoring (neither a fix nor a feature)
+                'perf', // Performance improvement
+                'test', // Adding or updating tests
+                'build', // Build system changes (npm, husky, webpack, etc.)
+                'ci', // CI/CD related changes
+                'chore', // Routine tasks (dependency updates, etc.)
+                'revert' // Reverting previous commits
+            ]
+        ],
+        'subject-case': [2, 'always', 'sentence-case'], // Ensures commit messages start with an uppercase letter
+        'header-max-length': [2, 'always', 100] // Limits commit message length to 100 characters
+    }
+}
 ```
 
 ## 🚀 Step 8: Try Running This Command :
@@ -283,26 +283,23 @@ Paste this **command** :
 ```mjs
 // @ts-check
 
-import eslint from "@eslint/js";
-import tseslint from "typescript-eslint";
+import eslint from '@eslint/js'
+import tseslint from 'typescript-eslint'
 
 export default tseslint.config({
-  languageOptions: {
-    parserOptions: {
-      project: true,
-      tsconfigRootDir: import.meta.dirname,
+    languageOptions: {
+        parserOptions: {
+            project: true,
+            tsconfigRootDir: import.meta.dirname
+        }
     },
-  },
-  files: ["**/*.ts"],
-  extends: [
-    eslint.configs.recommended,
-    ...tseslint.configs.recommendedTypeChecked,
-  ],
-  rules: {
-    "no-console": "error",
-    quotes: ["error", "single", { allowTemplateLiterals: true }],
-  },
-});
+    files: ['**/*.ts'],
+    extends: [eslint.configs.recommended, ...tseslint.configs.recommendedTypeChecked],
+    rules: {
+        'no-console': 'error',
+        quotes: ['error', 'single', { allowTemplateLiterals: true }]
+    }
+})
 ```
 
 Then run this **command** :
@@ -359,14 +356,49 @@ Paste this in that file :
   }
 
 ```
+
 Install **eslint-config-prettier** package :
 
 ```sh
 npm install --save-dev eslint-config-prettier
 ```
 
+Update the **Eslint** configuration :
+
+```js
+// @ts-check
+
+import eslint from '@eslint/js'
+import tseslint from 'typescript-eslint'
+import eslintConfigPrettier from 'eslint-config-prettier'
+
+export default tseslint.config({
+    languageOptions: {
+        parserOptions: {
+            project: true,
+            tsconfigRootDir: import.meta.dirname
+        }
+    },
+    files: ['**/*.ts'],
+    extends: [eslint.configs.recommended, ...tseslint.configs.recommendedTypeChecked, eslintConfigPrettier],
+    rules: {
+        'no-console': 'error',
+        quotes: ['error', 'single', { allowTemplateLiterals: true }]
+    }
+})
+```
+
+Add & Update these scripts :
+
+```js
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "format:check": "prettier . --check",
+        "format:fix": "prettier . --fix"
+```
+
 ## ✅ Final Notes
 
-- Ensure ``includes`env.development`&`env.production`.
-- Run `npm run dev` to start the development server.
-- Enjoy coding! 🚀
+-   Ensure ``includes`env.development`&`env.production`.
+-   Run `npm run dev` to start the development server.
+-   Enjoy coding! 🚀
