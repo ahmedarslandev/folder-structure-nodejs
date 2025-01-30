@@ -264,6 +264,76 @@ git commit -am "feat: Adding new features"
 git push -u origin main"
 ```
 
+## 🚀 Step 9: ES-LINT TypeScript & Configurations :
+
+Run this **command** :
+
+```sh
+npm install --save-dev eslint @eslint/js typescript typescript-eslint
+```
+
+```sh
+npm install --save-dev lint-staged
+```
+
+Create the file **eslint.config.mjs**
+
+Paste this **command** :
+
+```mjs
+// @ts-check
+
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
+
+export default tseslint.config({
+  languageOptions: {
+    parserOptions: {
+      project: true,
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+  files: ["**/*.ts"],
+  extends: [
+    eslint.configs.recommended,
+    ...tseslint.configs.recommendedTypeChecked,
+  ],
+  rules: {
+    "no-console": "error",
+    quotes: ["error", "single", { allowTemplateLiterals: true }],
+  },
+});
+```
+
+Then run this **command** :
+
+```sh
+npx eslint .
+```
+
+Update these scripts in **package.json** :
+
+```json
+"scripts": {
+    "test": "node ./test.js",
+    "dev": "nodemon ./src/server.ts",
+    "start": "node ./dist/server.js",
+    "prepare": "husky",
+    "dist": "npx tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+```
+
+Update the pre-commit in **.husky** folder :
+
+```sh
+#!/bin/sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+npx lint-stage
+```
+
 ## ✅ Final Notes
 
 - Ensure ``includes`env.development`&`env.production`.

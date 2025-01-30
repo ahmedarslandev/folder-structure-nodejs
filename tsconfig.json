@@ -10,11 +10,11 @@
     "skipLibCheck": true,
     "moduleResolution": "Node",
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noImplicitAny": true
   },
-  "include": ["src"],
+  "include": ["src" , "test"],
   "exclude": ["node_modules", "dist"]
 }
