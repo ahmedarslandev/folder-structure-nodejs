@@ -94,28 +94,28 @@ Now in the root Folder create these files :
 the whole package.json file will be :
 
 {
-"name": "backendfolderstructure",
-"version": "1.0.0",
-"main": "src/server.js",
-"scripts": {
-"test": "node ./test.js",
-"dev": "nodemon ./src/server.ts",
-"start": "node ./dist/server.js",
-"prepare": "husky",
-"dist": "npx tsc"
-},
-"keywords": [],
-"author": "",
-"license": "ISC",
-"type": "commonjs",
-"description": "",
-"devDependencies": {
-"husky": "^9.1.7",
-"lint-staged": "^15.4.3",
-"nodemon": "^3.1.9",
-"ts-node": "^10.9.2",
-"typescript": "^5.7.3"
-}
+    "name": "backendfolderstructure",
+    "version": "1.0.0",
+    "main": "src/server.js",
+    "scripts": {
+        "test": "node ./test.js",
+        "dev": "nodemon ./src/server.ts",
+        "start": "node ./dist/server.js",
+        "prepare": "husky",
+        "dist": "npx tsc"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs",
+    "description": "",
+    "devDependencies": {
+        "husky": "^9.1.7",
+        "lint-staged": "^15.4.3",
+        "nodemon": "^3.1.9",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.7.3"
+    }
 }
 
 In Root directory create these :
