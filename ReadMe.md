@@ -412,6 +412,30 @@ Update these scripts in package.json :
 "start": "cross-env NODE_ENV=production node ./dist/server.js",
 ```
 
+Add this in **.env.development** file :
+
+```env
+# SERVER
+ENV = development
+POST = 3000
+SERVER_URL = "http://localhost:3000";
+
+# DATABESE
+DATABASE_URL = "";
+
+
+# APPLICATION
+JWT_TOKEN = "";
+```
+
+Add this in **config.ts** file :
+
+```js
+import { config } from 'dotenv-flow'
+
+config()
+```
+
 ## ✅ Final Notes
 
 -   Ensure ``includes`env.development`&`env.production`.
