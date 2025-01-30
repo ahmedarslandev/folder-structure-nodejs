@@ -199,36 +199,73 @@ Create **CommitLint.config.js**:
 ```js
 // commitlint.config.js
 module.exports = {
-    extends: ['@commitlint/config-conventional'],
-    rules: {
-      'type-enum': [
-        2,
-        'always',
-        [
-          'feat', // New feature
-          'fix', // Bug fix
-          'docs', // Documentation update
-          'style', // Code style (formatting, missing semi-colons, etc.)
-          'refactor', // Code refactoring (neither a fix nor a feature)
-          'perf', // Performance improvement
-          'test', // Adding or updating tests
-          'build', // Build system changes (npm, husky, webpack, etc.)
-          'ci', // CI/CD related changes
-          'chore', // Routine tasks (dependency updates, etc.)
-          'revert' // Reverting previous commits
-        ]
+  extends: ["@commitlint/config-conventional"],
+  rules: {
+    "type-enum": [
+      2,
+      "always",
+      [
+        "feat", // New feature
+        "fix", // Bug fix
+        "docs", // Documentation update
+        "style", // Code style (formatting, missing semi-colons, etc.)
+        "refactor", // Code refactoring (neither a fix nor a feature)
+        "perf", // Performance improvement
+        "test", // Adding or updating tests
+        "build", // Build system changes (npm, husky, webpack, etc.)
+        "ci", // CI/CD related changes
+        "chore", // Routine tasks (dependency updates, etc.)
+        "revert", // Reverting previous commits
       ],
-      'subject-case': [2, 'always', 'sentence-case'], // Ensures commit messages start with an uppercase letter
-      'header-max-length': [2, 'always', 100] // Limits commit message length to 100 characters
-    }
-  };
-  
+    ],
+    "subject-case": [2, "always", "sentence-case"], // Ensures commit messages start with an uppercase letter
+    "header-max-length": [2, "always", 100], // Limits commit message length to 100 characters
+  },
+};
 ```
 
+## 🚀 Step 8: Try Running This Command :
+
+Run this **command**:
+
+```sh
+git add .
+```
+
+```sh
+git commit -am "faltu commit"
+```
+
+This will cause **Error** :
+
+```sh
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+They WILL FAIL in v10.0.0
+
+⧗   input: faltu commit
+✖   subject may not be empty [subject-empty]
+✖   type may not be empty [type-empty]
+
+✖   found 2 problems, 0 warnings
+ⓘ   Get help: https://github.com/conventional-changelog/commitlint/#what-is-commitlint
+
+husky - commit-msg script failed (code 1)
+```
+
+Try running the following **command** :
+
+```sh
+git commit -am "feat: Adding new features"
+```
+
+```sh
+git push -u origin main"
+```
 
 ## ✅ Final Notes
 
-- Ensure `` includes `env.development` & `env.production`.
+- Ensure ``includes`env.development`&`env.production`.
 - Run `npm run dev` to start the development server.
 - Enjoy coding! 🚀
-
