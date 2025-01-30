@@ -334,6 +334,37 @@ Update the pre-commit in **.husky** folder :
 npx lint-stage
 ```
 
+## 🚀 Step 10: Prettier & Configurations :
+
+Install **Prettier** :
+
+```sh
+npm install --save-dev --save-exact prettier
+```
+
+### Create New File In **.prettierrc**
+
+Paste this in that file :
+
+```js
+{
+    "semi": false,
+    "trailingComma": "none",
+    "tabWidth": 4,
+    "singleQuote": true,
+    "bracketSameLine": true,
+    "printWidth": 150,
+    "singleAttributePerLine": true,
+    "endOfLine": "crlf"
+  }
+
+```
+Install **eslint-config-prettier** package :
+
+```sh
+npm install --save-dev eslint-config-prettier
+```
+
 ## ✅ Final Notes
 
 - Ensure ``includes`env.development`&`env.production`.
