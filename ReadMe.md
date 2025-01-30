@@ -397,8 +397,27 @@ Add & Update these scripts :
         "format:fix": "prettier . --fix"
 ```
 
+## 🚀 Step 11: Enviroment Configurations :
+
+Install two packages known as **dotenv-flow && cross-env** :
+
+```sh
+npm i dotenv-flow cross-env
+```
+
+Update these scripts in package.json :
+
+```js
+"dev": "cross-env NODE_ENV=development nodemon ./src/server.ts",
+"start": "cross-env NODE_ENV=production node ./dist/server.js",
+```
+
 ## ✅ Final Notes
 
 -   Ensure ``includes`env.development`&`env.production`.
 -   Run `npm run dev` to start the development server.
 -   Enjoy coding! 🚀
+
+```
+
+```
