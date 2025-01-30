@@ -1,99 +1,162 @@
-Step 1 ----
-First of all run to initialize the application:
+# 📌 Project Setup Guide
 
-    -- npm init -y
+## 🚀 Step 1: Initialize the Application
 
-Step 2 ----
-Now in packege.json file create test and start scripts like :
+First, initialize the project by running:
 
-     "scripts": {
-        "test": "node test.js",
-        "start": "node index.js",
-        "prepare": "husky"
-      }
+```sh
+npm init -y
+```
 
-Step 3 ----
-Now install the huskey package and create the test.js file
--- npm i huskey -D
+---
 
-Step 4 ----
-Install the typescript as devdependency , so run:
--- npm install typescript ts-node -D
--- npx tsc --init
-Now set the consiguration in tsconfig.json file
+## 🔧 Step 2: Configure `package.json`
 
-Step 5 ----
-Now install the packege "nodemon" and update the scripts :
--- npm i nodemon -D
+Modify the `package.json` file to include the following scripts:
 
-    "scripts": {
-        "test": "node ./test.js",
-        "dev": "nodemon ./src/index.ts",
-        "start": "node ./dist/index.js",
-        "prepare": "husky",
-        "dist": "npx tsc"
-    },
+```json
+"scripts": {
+  "test": "node test.js",
+  "start": "node index.js",
+  "prepare": "husky"
+}
+```
 
-Now try to run this command :
--- npm run dev
+---
 
-Step 5 ----
-Now this is time to create the folder structure given below :
+## 🛠️ Step 3: Install Husky & Create Test File
 
--- create the ".gitignore" file
-Now create this folder structure in "./SRC" folder:
+Install **Husky** as a development dependency:
 
--- config (Folder) :
---- config.ts (File)
+```sh
+npm i husky -D
+```
 
--- constants (Folder) :
---- application.ts (File)
---- responceMessage.ts (File)
+Create a `test.js` file in your project root.
 
--- controller (Folder) :
---- apiController.ts (File)
+---
 
--- model (Folder) :
---- User.ts (File)
-OR
---- .gitkeep (File)
+## 📌 Step 4: Install TypeScript & Configure
 
--- router (Folder) :
---- apiRouter.ts (File)
+Install TypeScript and `ts-node` as dev dependencies:
 
--- service (Folder) :
---- service.ts (File)  
- OR
---- .gitkeep (File)
+```sh
+npm install typescript ts-node -D
+npx tsc --init
+```
 
--- types (Folder) :
---- types.ts (File)
-OR
---- .gitkeep (File)
+Modify `tsconfig.json` to match your project needs.
 
--- utils (Folder) :
---- utils.ts (File)
---- errorObject.ts (File)
---- quicker.ts (File)
---- httpError.ts (File)
---- httpResponce.ts (File)
-OR
---- .gitkeep (File)
+---
 
--- middleware (Folder) :
---- globalErrorHandler.ts (File)
+## 🚀 Step 5: Install Nodemon & Update Scripts
 
--- views (Folder) :
---- .gitkeep (File)
+Install **Nodemon**:
 
-Now in the root Folder create these files :
+```sh
+npm i nodemon -D
+```
 
---- app.ts (File)
---- server.ts (File || EntryPoint)
+Update the `scripts` section in `package.json`:
 
-the whole package.json file will be :
+```json
+"scripts": {
+  "test": "node ./test.js",
+  "dev": "nodemon ./src/index.ts",
+  "start": "node ./dist/index.js",
+  "prepare": "husky",
+  "dist": "npx tsc"
+}
+```
 
+Run the development server:
 
+```sh
+npm run dev
+```
+
+---
+
+## 📂 Step 6: Folder Structure
+
+Organize your project in the following structure:
+
+### 📌 Root Directory
+
+```
+- .gitignore
+- package.json
+- tsconfig.json
+- nodemon.json
+- ecosystem.config.js
+- env.development
+- env.production
+- env.example
+- app.ts
+- server.ts
+```
+
+### 📂 Source (`/src`)
+
+```
+- src/
+  ├── config/
+  │   ├── config.ts
+  ├── constants/
+  │   ├── application.ts
+  │   ├── responseMessage.ts
+  ├── controller/
+  │   ├── apiController.ts
+  ├── model/
+  │   ├── User.ts (or .gitkeep)
+  ├── router/
+  │   ├── apiRouter.ts
+  ├── service/
+  │   ├── service.ts (or .gitkeep)
+  ├── types/
+  │   ├── types.ts (or .gitkeep)
+  ├── utils/
+  │   ├── utils.ts
+  │   ├── errorObject.ts
+  │   ├── quicker.ts
+  │   ├── httpError.ts
+  │   ├── httpResponse.ts
+  │   ├── .gitkeep
+  ├── middleware/
+  │   ├── globalErrorHandler.ts
+  ├── views/
+  │   ├── .gitkeep
+```
+
+### 📂 Additional Folders in Root Directory
+
+```
+- script/
+  ├── .gitkeep
+
+- nginx/
+  ├── http.conf
+  ├── https.conf (or .gitkeep)
+
+- logs/
+  ├── .gitignore (Add "*\n!.gitignore")
+
+- public/
+  ├── .gitkeep
+
+- test/
+  ├── .gitkeep
+
+- docker/
+  ├── DockerFile (or .gitkeep)
+```
+
+---
+
+## 📜 Final `package.json`
+
+```json
+{
   "name": "backendfolderstructure",
   "version": "1.0.0",
   "main": "src/server.js",
@@ -116,38 +179,14 @@ the whole package.json file will be :
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   }
+}
+```
 
+---
 
-In Root directory create these :
+## ✅ Final Notes
 
--- script (Folder) :
---- .gitkeep (File)
+- Ensure `` includes `env.development` & `env.production`.
+- Run `npm run dev` to start the development server.
+- Enjoy coding! 🚀
 
--- ngnix (Folder) :
---- http.conf (File)
---- https.conf (File)
-OR
---- .gitkeep (File)
-
--- logs (Folder) :
---- .gitignore (File || paste this in file \* /n !.gitignore)
-
--- public (Folder) :
---- .gitkeep (File)
-
--- test (Folder) :
---- .gitkeep (File)
-
--- docker (Folder) :
-OR
---- DockerFile (File)
---- .gitkeep (File)
-
--- env.development (File)
--- env.production (File)
--- env.example (File)
--- .gitignore (File)
--- nodemon.json (File)
--- ecosystem.config.js (File)
-
-In the gitignore file in root , add the "env.development" & "env.production" files
