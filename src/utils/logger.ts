@@ -6,6 +6,8 @@ import { EApplicationEnvironment } from '../constants/application'
 import path from 'path'
 import * as sourceMapSupport from 'source-map-support'
 import { red, yellow, blue, cyan, magenta, bgGreen } from 'colorette'
+import 'winston-mongodb'
+import { MongoDBTransportInstance } from 'winston-mongodb'
 
 // LINKING SUPPORT BETWEEN TYPESCRIPT AND JAVASCRIPT
 sourceMapSupport.install()
@@ -86,9 +88,21 @@ const fileTransport = (): Array<FileTransportInstance> => {
     ]
 }
 
+const mongodbTransport = (): Array<MongoDBTransportInstance> => {
+    return [
+        new transports.MongoDB({
+            level: 'info',
+            db: config.DATABASE_URL as string,
+            metaKey: 'meta',
+            expireAfterSeconds: 3600 * 24 * 15,
+            collection: 'application-logs'
+        })
+    ]
+}
+
 export default createLogger({
     defaultMeta: {
         meta: {}
     },
-    transports: [...consoleTransport(), ...fileTransport()]
+    transports: [...consoleTransport(), ...mongodbTransport(), ...fileTransport()]
 })

@@ -1052,6 +1052,47 @@ void (async () => {
 })()
 ```
 
+## 🚀 Step 16: MongoDB With Winston Logger:
+
+Install the package `winston-mongodb`:
+
+```sh
+npm i winston-mongodb
+```
+
+In `logger.ts` file import the `winston-mongodb` package:
+
+```ts
+import 'winston-mongodb'
+```
+
+Then create the mongodbLogs function :
+
+```ts
+const mongodbTransport = (): Array<MongoDBTransportInstance> => {
+    return [
+        new transports.MongoDB({
+            level: 'info',
+            db: config.DATABASE_URL as string,
+            metaKey: 'meta',
+            expireAfterSeconds: 3600 * 24 * 15,
+            collection: 'application-logs'
+        })
+    ]
+}
+```
+
+And then add this in transports array :
+
+```ts
+export default createLogger({
+    defaultMeta: {
+        meta: {}
+    },
+    transports: [...consoleTransport(), ...mongodbTransport(), ...fileTransport()]
+})
+```
+
 ## ✅ Final Notes
 
 - Ensure ``includes`env.development`&`env.production`.
