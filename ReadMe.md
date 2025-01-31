@@ -882,7 +882,7 @@ npm i colorette
 
 Now update `logger.ts` file :
 
-``` ts 
+```ts
 import { createLogger, format, transports } from 'winston'
 import { ConsoleTransportInstance, FileTransportInstance } from 'winston/lib/winston/transports'
 import util from 'util'
@@ -890,7 +890,7 @@ import config from '../config/config'
 import { EApplicationEnvironment } from '../constants/application'
 import path from 'path'
 import * as sourceMapSupport from 'source-map-support'
-import { red, yellow, blue, green, white, cyan } from 'colorette'
+import { red, yellow, blue, cyan, magenta, bgGreen } from 'colorette'
 
 // LINKING SUPPORT BETWEEN TYPESCRIPT AND JAVASCRIPT
 sourceMapSupport.install()
@@ -902,11 +902,11 @@ const colorize = (level: string) => {
         case 'WARN':
             return yellow(level)
         case 'INFO':
-            return green(level)
-        case 'DEBUG':
             return blue(level)
+        case 'DEBUG':
+            return magenta(level)
         default:
-            return white(level)
+            return bgGreen(level)
     }
 }
 
@@ -919,8 +919,7 @@ const consoleLogFormat = format.printf((info) => {
         colors: true
     })
 
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    return `${colorize(level.toUpperCase())} [${cyan(timestamp as string)}] ${message}\n ${customMeta ? `META: ${customMeta}` : ''}\n`
+    return `${colorize(level.toUpperCase())} [${cyan(timestamp as string)}] ${yellow(message as string)}\n ${customMeta ? magenta('META: ') + customMeta : ''}\n`
 })
 
 const consoleTransport = (): Array<ConsoleTransportInstance> => {
@@ -978,7 +977,6 @@ export default createLogger({
     },
     transports: [...consoleTransport(), ...fileTransport()]
 })
-
 ```
 
 ## ✅ Final Notes
