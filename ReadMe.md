@@ -1239,6 +1239,138 @@ Make sure that you can create the route in `apiRoute.ts` :
 router.route('/health').get(apiController.health)
 ```
 
+# Security of the web application :
+
+## Use helmetJs for secure headers :
+
+```sh
+npm i helmet
+```
+
+```ts
+import helmet from 'helmet'
+app.use(helmet())
+```
+
+## Use cors :
+
+```sh
+npm i cors
+npm i --save-dev @types/cors
+```
+
+```ts
+import cors from 'cors'
+app.use(
+    cors({
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        origin: ['http://localhost:5173'],
+        credentials: true
+    })
+)
+```
+
+## Rate Limiting :
+
+First of all , install the package `rate-limiter-flexible`:
+
+```sh
+npm i rate-limiter-flexible
+```
+
+In `config` folder , craete new file `rateLimiter.ts` :
+
+```ts
+import { Connection } from 'mongoose'
+import { RateLimiterMongo } from 'rate-limiter-flexible'
+import config from './config'
+
+export let rateLimitterMongo: RateLimiterMongo | null = null
+
+export const initRateLimitter = (mongooseConnection: Connection) => {
+    rateLimitterMongo = new RateLimiterMongo({
+        storeClient: mongooseConnection,
+        points: parseInt(config.POINTS_PER_SECOND as string),
+        duration: parseInt(config.DURATION as string)
+    })
+}
+```
+
+`server.ts` file should be :
+
+```ts
+import app from './app'
+import config from './config/config'
+import { initRateLimitter } from './config/rateLimitter'
+import databaseService from './service/databaseService'
+import logger from './utils/logger'
+
+const server = app.listen(config.PORT)
+
+void (async () => {
+    try {
+        // DATABASE_CONNECTION
+        const dbConnection = await databaseService.connect()
+        initRateLimitter(dbConnection)
+
+        logger.info('RATE_LIMITER_INITIATED')
+
+        logger.info('DATABASE_CONNECTION', {
+            meta: {
+                CONNECTION_NAME: dbConnection.name
+            }
+        })
+
+        logger.info('SERVER_STARTED', {
+            meta: {
+                PORT: config.PORT,
+                SERVER_URL: config.SERVER_URL,
+                MESSAGE: 'Server started successfully',
+                TIME_STAMP: new Date().toISOString()
+            }
+        })
+    } catch (error) {
+        logger.error('APPLICATION_ERROR', error)
+
+        server.close((err) => {
+            if (err) {
+                logger.error('SERVER_CLOSE_ERROR', err)
+            }
+
+            process.exit(1)
+        })
+    }
+})()
+```
+
+In `middleware` folder create a new file `rateLimit.ts` :
+
+```ts
+import { NextFunction, Request, Response } from 'express'
+import config from '../config/config'
+import { EApplicationEnvironment } from '../constants/application'
+import { rateLimitterMongo } from '../config/rateLimitter'
+import httpError from '../utils/httpError'
+import responseMessage from '../constants/responseMessage'
+
+export default (req: Request, _: Response, next: NextFunction) => {
+    if (config.ENV === EApplicationEnvironment.DEVELOPMENT) {
+        next()
+    }
+
+    if (rateLimitterMongo) {
+        rateLimitterMongo
+            .consume(req.ip as string, 1)
+            .then(() => next())
+            .catch(() => {
+                httpError(next, new Error(responseMessage.TOO_MANY_REQUESTS), req, 429)
+            })
+    }
+}
+```
+
+In `app.ts` file use this middleware according to use
+
 ## ✅ Final Notes
 
 - Ensure ``includes`env.development`&`env.production`.

@@ -8,9 +8,9 @@ export default {
     self: (req: Request, res: Response, NextFn: NextFunction) => {
         try {
             // throw new Error('this is error')
-            return httpResponse(req, res, 200, responseMessage.SUCCESS, { imageUrl: 'http://localhost:8080/images' })
+             httpResponse(req, res, 200, responseMessage.SUCCESS, { imageUrl: 'http://localhost:8080/images' })
         } catch (error) {
-            return httpError(NextFn, error, req, 500)
+             httpError(NextFn, error, req, 500)
         }
     },
 
@@ -19,9 +19,9 @@ export default {
             const systemHealth = quicker.getSystemDetails()
             const applicationHealth = quicker.getApplicationDetails()
 
-            return httpResponse(req, res, 200, responseMessage.SUCCESS, { systemHealth, applicationHealth })
+             httpResponse(req, res, 200, responseMessage.SUCCESS, { systemHealth, applicationHealth })
         } catch (error) {
-            return httpError(NextFn, error, req, 500)
+             httpError(NextFn, error, req, 500)
         }
     }
 }

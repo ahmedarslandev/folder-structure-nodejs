@@ -1,5 +1,6 @@
 import app from './app'
 import config from './config/config'
+import { initRateLimitter } from './config/rateLimitter'
 import databaseService from './service/databaseService'
 import logger from './utils/logger'
 
@@ -9,6 +10,9 @@ void (async () => {
     try {
         // DATABASE_CONNECTION
         const dbConnection = await databaseService.connect()
+        initRateLimitter(dbConnection)
+
+        logger.info('RATE_LIMITER_INITIATED')
 
         logger.info('DATABASE_CONNECTION', {
             meta: {
