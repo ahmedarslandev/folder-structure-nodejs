@@ -762,7 +762,7 @@ app.use((req: Request, _: Response, NextFn: NextFunction) => {
 })
 ```
 
-## 🚀 Step 13: Winston Logger:
+## 🚀 Step 14: Winston Logger:
 
 First of all, Install the **winston** package :
 
@@ -856,7 +856,7 @@ Now update the console statements to logger , such as
 `console.log()` to `logger.log()`.
 `console.error()` to `logger.error()`.
 
-## 🚀 Step 13: Source Map Support:
+## 🚀 Step 15: Source Map Support:
 
 Install the package `source-map-support` :
 
@@ -871,6 +871,115 @@ npm i @types/source-map-support -D
 ```
 
 Make sure that the source map option is enabled `tsconfig.json` file
+
+## 🚀 Step 16: Colorette:
+
+Installation of `colorette` :
+
+```sh
+npm i colorette
+```
+
+Now update `logger.ts` file :
+
+``` ts 
+import { createLogger, format, transports } from 'winston'
+import { ConsoleTransportInstance, FileTransportInstance } from 'winston/lib/winston/transports'
+import util from 'util'
+import config from '../config/config'
+import { EApplicationEnvironment } from '../constants/application'
+import path from 'path'
+import * as sourceMapSupport from 'source-map-support'
+import { red, yellow, blue, green, white, cyan } from 'colorette'
+
+// LINKING SUPPORT BETWEEN TYPESCRIPT AND JAVASCRIPT
+sourceMapSupport.install()
+
+const colorize = (level: string) => {
+    switch (level) {
+        case 'ERROR':
+            return red(level)
+        case 'WARN':
+            return yellow(level)
+        case 'INFO':
+            return green(level)
+        case 'DEBUG':
+            return blue(level)
+        default:
+            return white(level)
+    }
+}
+
+const consoleLogFormat = format.printf((info) => {
+    const { level, message, timestamp, meta = {} } = info
+
+    const customMeta = util.inspect(meta, {
+        showHidden: false,
+        depth: null,
+        colors: true
+    })
+
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    return `${colorize(level.toUpperCase())} [${cyan(timestamp as string)}] ${message}\n ${customMeta ? `META: ${customMeta}` : ''}\n`
+})
+
+const consoleTransport = (): Array<ConsoleTransportInstance> => {
+    if (config.ENV === EApplicationEnvironment.DEVELOPMENT) {
+        return [
+            new transports.Console({
+                level: 'info',
+                format: format.combine(format.timestamp(), consoleLogFormat)
+            })
+        ]
+    }
+    return []
+}
+
+const fileLogFormat = format.printf((info) => {
+    const { level, message, timestamp, meta = {} } = info
+
+    const logMeta: Record<string, unknown> = {}
+
+    for (const [key, value] of Object.entries(meta as Record<string, unknown>)) {
+        if (value instanceof Error) {
+            logMeta[key] = {
+                name: value.name,
+                message: value.message,
+                trace: value.stack || ''
+            }
+        } else {
+            logMeta[key] = value
+        }
+    }
+
+    const logData = {
+        level: level.toUpperCase(),
+        message,
+        timestamp,
+        meta: logMeta
+    }
+
+    return JSON.stringify(logData, null, 4)
+})
+
+const fileTransport = (): Array<FileTransportInstance> => {
+    return [
+        new transports.File({
+            filename: path.join(__dirname, '../', '../', './logs', `${config.ENV}.log`),
+            level: 'info',
+            format: format.combine(format.timestamp(), fileLogFormat)
+        })
+    ]
+}
+
+export default createLogger({
+    defaultMeta: {
+        meta: {}
+    },
+    transports: [...consoleTransport(), ...fileTransport()]
+})
+
+```
 
 ## ✅ Final Notes
 

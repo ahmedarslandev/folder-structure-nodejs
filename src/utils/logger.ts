@@ -5,9 +5,25 @@ import config from '../config/config'
 import { EApplicationEnvironment } from '../constants/application'
 import path from 'path'
 import * as sourceMapSupport from 'source-map-support'
+import { red, yellow, blue, cyan, magenta, bgGreen } from 'colorette'
 
 // LINKING SUPPORT BETWEEN TYPESCRIPT AND JAVASCRIPT
 sourceMapSupport.install()
+
+const colorize = (level: string) => {
+    switch (level) {
+        case 'ERROR':
+            return red(level)
+        case 'WARN':
+            return yellow(level)
+        case 'INFO':
+            return blue(level)
+        case 'DEBUG':
+            return magenta(level)
+        default:
+            return bgGreen(level)
+    }
+}
 
 const consoleLogFormat = format.printf((info) => {
     const { level, message, timestamp, meta = {} } = info
@@ -15,10 +31,10 @@ const consoleLogFormat = format.printf((info) => {
     const customMeta = util.inspect(meta, {
         showHidden: false,
         depth: null,
+        colors: true
     })
 
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    return `${level.toUpperCase()} [${timestamp}] ${message}\n ${customMeta ? `META: ${customMeta}` : ''}\n`
+    return `${colorize(level.toUpperCase())} [${cyan(timestamp as string)}] ${yellow(message as string)}\n ${customMeta ? magenta('META: ') + customMeta : ''}\n`
 })
 
 const consoleTransport = (): Array<ConsoleTransportInstance> => {
