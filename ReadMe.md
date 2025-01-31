@@ -979,6 +979,79 @@ export default createLogger({
 })
 ```
 
+## 🚀 Step 16: MongoDB configuration:
+
+Install `mongoose` :
+
+```sh
+npm i mongoose
+```
+
+Then in `service` folder , create new file `databaseConfig.ts`
+
+And then paste this code in that file :
+
+```ts
+import mongoose from 'mongoose'
+import config from '../config/config'
+
+export default {
+    connect: async () => {
+        try {
+            await mongoose.connect(config.DATABASE_URL as string, {
+                dbName: 'nodejs-production-setup'
+            })
+            return mongoose.connection
+        } catch (error) {
+            throw error
+        }
+    }
+}
+```
+
+Now in `server.ts` file create the mongodb connection like this in Imidiate Invoked Fucntion Expression :
+
+```ts
+import app from './app'
+import config from './config/config'
+import databaseService from './service/databaseService'
+import logger from './utils/logger'
+
+const server = app.listen(config.PORT)
+
+void (async () => {
+    try {
+        // DATABASE_CONNECTION
+        const dbConnection = await databaseService.connect()
+
+        logger.info('DATABASE_CONNECTION', {
+            meta: {
+                CONNECTION_NAME: dbConnection.name
+            }
+        })
+
+        logger.info('SERVER_STARTED', {
+            meta: {
+                PORT: config.PORT,
+                SERVER_URL: config.SERVER_URL,
+                MESSAGE: 'Server started successfully',
+                TIME_STAMP: new Date().toISOString()
+            }
+        })
+    } catch (error) {
+        logger.error('APPLICATION_ERROR', error)
+
+        server.close((err) => {
+            if (err) {
+                logger.error('SERVER_CLOSE_ERROR', err)
+            }
+
+            process.exit(1)
+        })
+    }
+})()
+```
+
 ## ✅ Final Notes
 
 - Ensure ``includes`env.development`&`env.production`.
