@@ -447,14 +447,277 @@ export default {
     // APPLICATION
     JWT_TOKEN: process.env.JWT_TOKEN
 }
+```
 
+## 🚀 Step 12: Configuring ExpressJs :
+
+First of all you need install **ExpressJS** :
+
+```sh
+npm i express
+```
+
+Also we need **types** of express :
+
+```sh
+npm i @types/express -D
+```
+
+Now move to the **app.ts** file and paste this **code**:
+
+```ts
+import express, { Application } from 'express'
+import { join } from 'path'
+
+const app: Application = express()
+
+// MIDDLEWARE
+app.use(express.json())
+app.use(express.static(join(__dirname, '../', './public')))
+
+// ROUTES
+
+export default app
+```
+
+Again move to the **server.ts** file and paste this **code**:
+
+```ts
+import app from './app'
+import config from './config/config'
+
+const server = app.listen(config.PORT)
+
+;(() => {
+    try {
+        // DATABASE_CONNECTION
+
+        console.log('SERVER_STARTED', {
+            meta: {
+                PORT: config.PORT,
+                SERVER_URL: config.SERVER_URL,
+                MESSAGE: 'Server started successfully',
+                TIME_STAMP: new Date().toISOString()
+            }
+        })
+    } catch (error) {
+        console.error('APPLICATION_ERROR', error)
+
+        server.close((err) => {
+            if (err) {
+                console.error('SERVER_CLOSE_ERROR', err)
+            }
+
+            process.exit(1)
+        })
+    }
+})()
+```
+
+In **apiRouter.ts** , Paste this code :
+
+```ts
+import { Router } from 'express'
+import apiController from '../controller/apiController'
+
+const router = Router()
+
+router.route('self').get(apiController.self)
+
+export default router
+```
+
+In the **apiController.ts** :
+
+```ts
+import { Request, Response } from 'express'
+
+export default {
+    self: (_, req: Request, res: Response) => {
+        try {
+            res.sendStatus(200)
+        } catch (error) {
+            res.sendStatus(500)
+        }
+    }
+}
+```
+
+Now in **types.ts** :
+
+Paste this :
+
+```ts
+export type THttpResponse = {
+    success: boolean
+    status: number
+    request: {
+        ip?: string | null
+        method: string
+        url: string
+    }
+    message: string
+    data?: unknown
+}
+
+export type THttpError = {
+    success: boolean
+    status: number
+    request: {
+        ip?: string | null
+        method: string
+        url: string
+    }
+    message: string
+    data?: unknown
+    trace?: object | null
+}
+```
+
+In **application.ts** :
+
+```ts
+export enum EApplicationEnvironment {
+    PRODUCTION = 'production',
+    DEVELOPMENT = 'development',
+    TEST = 'test'
+}
+```
+
+In **HttpResponse.ts** :
+
+```ts
+import { Request, Response } from 'express'
+import { THttpResponse } from '../types/types'
+import config from '../config/config'
+import { EApplicationEnvironment } from '../constants/application'
+
+export default (req: Request, res: Response, responseStatusCode: number, responseMessage: string, data: unknown = null): void => {
+    const response: THttpResponse = {
+        success: true,
+        status: responseStatusCode,
+        request: {
+            ip: req.ip || null,
+            method: req.method,
+            url: req.originalUrl
+        },
+        message: responseMessage,
+        data
+    }
+
+    // LOG
+    console.log('CONTROLLER_RESPONCE', { meta: response })
+
+    // Production ENV check
+    if (config.ENV === EApplicationEnvironment.PRODUCTION) {
+        delete response.request.ip
+    }
+
+    res.status(responseStatusCode).json(response)
+}
+```
+
+In **errorObject.ts** :
+
+```ts
+import { Request } from 'express'
+import { THttpError } from '../types/types'
+import responseMessage from '../constants/responseMessage'
+import config from '../config/config'
+import { EApplicationEnvironment } from '../constants/application'
+
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+export default (error: Error | unknown, req: Request, errorStatusCode: number = 500) => {
+    const errorObj: THttpError = {
+        success: false,
+        status: errorStatusCode,
+        message: error instanceof Error ? error.message : responseMessage.ERROR,
+        trace: error instanceof Error ? { error: error.stack } : null,
+        request: {
+            ip: req.ip || null,
+            method: req.method,
+            url: req.originalUrl
+        }
+    }
+
+    // LOG
+    console.log('CONTROLLER_ERROR', { meta: errorObj })
+
+    // Production ENV check
+    if (config.ENV === EApplicationEnvironment.PRODUCTION) {
+        delete errorObj.request.ip
+        delete errorObj.trace
+    }
+
+    return errorObj
+}
+```
+
+In **httpError.ts** :
+
+```ts
+import { NextFunction, Request } from 'express'
+import errorObjects from './errorObjects'
+
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+export default (NextFn: NextFunction, err: Error | unknown, req: Request, errorStatusCode: number = 500) => {
+    const errorObj = errorObjects(err, req, errorStatusCode)
+
+    return NextFn(errorObj)
+}
+```
+
+In **apiRoute.ts** :
+
+```ts
+import { Router } from 'express'
+import apiController from '../controller/apiController'
+
+const router = Router()
+
+router.route('/self').get(apiController.self)
+
+export default router
+```
+
+In **apiController.ts** :
+
+```ts
+import { NextFunction, Request, Response } from 'express'
+import httpResponse from '../utils/httpResponse'
+import responseMessage from '../constants/responseMessage'
+import httpError from '../utils/httpError'
+
+export default {
+    self: (req: Request, res: Response, NextFn: NextFunction) => {
+        try {
+            throw new Error('this is error')
+            httpResponse(req, res, 200, responseMessage.SUCCESS, { imageUrl: 'http://localhost:8080/images' })
+        } catch (error) {
+            httpError(NextFn, error, req, 500)
+        }
+    }
+}
+```
+
+In **responseMessage.ts** :
+
+```ts
+export default {
+    SUCCESS: `The operation has been successful`,
+    ERROR: `An error occurred during the operation`,
+    NOT_FOUND: `The requested resource was not found`,
+    UNAUTHORIZED: `You are not authorized to perform this action`,
+    FORBIDDEN: `You are forbidden to perform this action`,
+    CONFLICT: `The requested resource already exists`
+}
 ```
 
 ## ✅ Final Notes
 
--   Ensure ``includes`env.development`&`env.production`.
--   Run `npm run dev` to start the development server.
--   Enjoy coding! 🚀
+- Ensure ``includes`env.development`&`env.production`.
+- Run `npm run dev` to start the development server.
+- Enjoy coding! 🚀
 
 ```
 
