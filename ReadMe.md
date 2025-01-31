@@ -1170,6 +1170,75 @@ migrate-mongo up
 migrate-mongo down
 ```
 
+## 🚀 Step 20: System And Application Health Check:
+
+In the `quicker.ts` file, paste this code :
+
+```ts
+import os from 'os'
+import config from '../config/config'
+
+export default {
+    getSystemDetails: () => {
+        return {
+            cpuUsage: os.loadavg(),
+            totalmemory: `${(os.totalmem() / 1024 / 1024).toFixed(2)} MB`,
+            freeMemory: `${(os.freemem() / 1024 / 1024).toFixed(2)} MB`
+        }
+    },
+
+    getApplicationDetails: () => {
+        return {
+            environment: config.ENV,
+            uptime: `${process.uptime().toFixed(2)} Seconds`,
+            memoryUsage: {
+                heapTotal: `${(process.memoryUsage().heapTotal / 1024 / 1024).toFixed(2)} MB`,
+                heapUsed: `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB`,
+                external: `${(process.memoryUsage().external / 1024 / 1024).toFixed(2)} MB`
+            }
+        }
+    }
+}
+```
+
+Now update the `apiController.ts` configuration :
+
+```ts
+import { NextFunction, Request, Response } from 'express'
+import httpResponse from '../utils/httpResponse'
+import responseMessage from '../constants/responseMessage'
+import httpError from '../utils/httpError'
+import quicker from '../utils/quicker'
+
+export default {
+    self: (req: Request, res: Response, NextFn: NextFunction) => {
+        try {
+            // throw new Error('this is error')
+            httpResponse(req, res, 200, responseMessage.SUCCESS, { imageUrl: 'http://localhost:8080/images' })
+        } catch (error) {
+            httpError(NextFn, error, req, 500)
+        }
+    },
+
+    health: (req: Request, res: Response, NextFn: NextFunction) => {
+        try {
+            const systemHealth = quicker.getSystemDetails()
+            const applicationHealth = quicker.getApplicationDetails()
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, { systemHealth, applicationHealth })
+        } catch (error) {
+            httpError(NextFn, error, req, 500)
+        }
+    }
+}
+```
+
+Make sure that you can create the route in `apiRoute.ts` :
+
+```ts
+router.route('/health').get(apiController.health)
+```
+
 ## ✅ Final Notes
 
 - Ensure ``includes`env.development`&`env.production`.
