@@ -713,6 +713,43 @@ export default {
 }
 ```
 
+In **globalErrorHandler.ts** :
+
+```ts
+import { NextFunction, Request, Response } from 'express'
+import { THttpError } from '../types/types'
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default (err: THttpError, _: Request, res: Response, __: NextFunction) => {
+    res.status(err.status).json(err)
+}
+```
+
+Update **app.ts** :
+
+```ts
+import express, { Application } from 'express'
+import { join } from 'path'
+import router from './router/apiRouter'
+import globalErrorHandler from './middleware/globalErrorHandler'
+
+const app: Application = express()
+
+// MIDDLEWARE
+app.use(express.json())
+app.use(express.static(join(__dirname, '../', './public')))
+
+// ROUTES
+app.use('/api/v1', router)
+
+// GLOBAL ERROR HANDLER
+app.use(globalErrorHandler)
+
+export default app
+```
+
+## 🚀 Step 13: Global configuration:
+
 ## ✅ Final Notes
 
 - Ensure ``includes`env.development`&`env.production`.
