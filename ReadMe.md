@@ -748,7 +748,20 @@ app.use(globalErrorHandler)
 export default app
 ```
 
-## 🚀 Step 13: Global configuration:
+## 🚀 Step 13: 404 Error Handler:
+
+In **app.ts**, paste this in global error handler section in above the **globalErrorHandler** middleware:
+
+```ts
+app.use((req: Request, _: Response, NextFn: NextFunction) => {
+    try {
+        throw new Error(responseMessage.NOT_FOUND('route'))
+    } catch (error) {
+        httpError(NextFn, error, req, 404)
+    }
+})
+```
+
 
 ## ✅ Final Notes
 
