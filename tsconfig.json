@@ -13,7 +13,8 @@
     "rootDir": ".",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "sourceMap": true
   },
   "include": ["src" , "test"],
   "exclude": ["node_modules", "dist"]

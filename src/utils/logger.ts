@@ -4,6 +4,10 @@ import util from 'util'
 import config from '../config/config'
 import { EApplicationEnvironment } from '../constants/application'
 import path from 'path'
+import * as sourceMapSupport from 'source-map-support'
+
+// LINKING SUPPORT BETWEEN TYPESCRIPT AND JAVASCRIPT
+sourceMapSupport.install()
 
 const consoleLogFormat = format.printf((info) => {
     const { level, message, timestamp, meta = {} } = info

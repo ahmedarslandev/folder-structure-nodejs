@@ -787,7 +787,7 @@ const consoleLogFormat = format.printf((info) => {
 
     const customMeta = util.inspect(meta, {
         showHidden: false,
-        depth: null,
+        depth: null
     })
 
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -849,13 +849,28 @@ export default createLogger({
     },
     transports: [...consoleTransport(), ...fileTransport()]
 })
-
 ```
 
 Now update the console statements to logger , such as
 
 `console.log()` to `logger.log()`.
 `console.error()` to `logger.error()`.
+
+## 🚀 Step 13: Source Map Support:
+
+Install the package `source-map-support` :
+
+```sh
+npm i source-map-support
+```
+
+For types :
+
+```sh
+npm i @types/source-map-support -D
+```
+
+Make sure that the source map option is enabled `tsconfig.json` file
 
 ## ✅ Final Notes
 
